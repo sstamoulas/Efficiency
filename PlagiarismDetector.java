@@ -1,5 +1,3 @@
-
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +26,7 @@ public class PlagiarismDetector {
 		for (int i = 0; i < files.length; i++) {
 			String file1 = files[i];
 
-			for (int j = 0; j < files.length; j++) { 
+			for (int j = i + 1; j < files.length; j++) { 
 				String file2 = files[j];
 				
 				Set<String> file1Phrases = createPhrases(dirName + "/" + file1, windowSize); 
@@ -68,6 +66,7 @@ public class PlagiarismDetector {
 		
 		try {
 			Scanner in = new Scanner(new File(filename));
+			
 			while (in.hasNext()) {
 				words.add(in.next().replaceAll("[^a-zA-Z]", "").toUpperCase());
 			}
@@ -117,12 +116,9 @@ public class PlagiarismDetector {
 		Set<String> matches = new HashSet<String>();
 		
 		if (myPhrases != null && yourPhrases != null) {
-		
 			for (String mine : myPhrases) {
-				for (String yours : yourPhrases) {
-					if (mine.equalsIgnoreCase(yours)) {
-						matches.add(mine);
-					}
+				if (!matches.contains(mine) && yourPhrases.contains(mine)) {
+					matches.add(mine);
 				}
 			}
 		}
@@ -138,13 +134,13 @@ public class PlagiarismDetector {
 		// Because this approach modifies the Map as a side effect of printing 
 		// the results, it is necessary to make a copy of the original Map
 		Map<String, Integer> copy = new HashMap<String, Integer>();
-
+		
 		for (String key : possibleMatches.keySet()) {
 			copy.put(key, possibleMatches.get(key));
 		}	
 		
 		LinkedHashMap<String, Integer> list = new LinkedHashMap<String, Integer>();
-
+		
 		for (int i = 0; i < copy.size(); i++) {
 			int maxValue = 0;
 			String maxKey = null;
